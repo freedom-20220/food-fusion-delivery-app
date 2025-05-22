@@ -15,6 +15,27 @@ export interface Restaurant {
   offer?: boolean;
 }
 
+// Product type definition for eco-market
+export interface Product {
+  id: string;
+  name: string;
+  nameAr?: string;
+  description: string;
+  descriptionAr?: string;
+  price: number;
+  originalPrice: number;
+  image: string;
+  category: string;
+  categoryAr?: string;
+  discount: number;
+  rating: number;
+  inStock: boolean;
+  popular?: boolean;
+  featured?: boolean;
+  isNew?: boolean;
+  quantity?: number;
+}
+
 // Menu item type definition
 export interface MenuItem {
   id: string;
@@ -30,7 +51,7 @@ export interface MenuItem {
 
 // Cart item type definition
 export interface CartItem {
-  menuItem: MenuItem;
+  menuItem: MenuItem | Product;
   quantity: number;
 }
 

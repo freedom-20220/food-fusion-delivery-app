@@ -34,7 +34,7 @@ const Header = ({ title, showBackButton = false, showSearch = false }: HeaderPro
             )}
             {!showBackButton && (
               <Link to="/" className="flex items-center">
-                <span className="font-bold text-xl text-brand-orange">MOTO<span className="text-brand-orange-dark">BOX</span></span>
+                <span className="font-bold text-xl text-green-600">ECO<span className="text-green-800">MARKET</span></span>
               </Link>
             )}
             {title && <h1 className="text-lg font-semibold">{title}</h1>}
@@ -47,7 +47,7 @@ const Header = ({ title, showBackButton = false, showSearch = false }: HeaderPro
             <Link to="/cart" className="relative">
               <ShoppingCart className="h-6 w-6 text-gray-600" />
               {totalItems > 0 && (
-                <Badge className="absolute -top-2 -right-2 bg-brand-orange h-5 w-5 flex items-center justify-center p-0 rounded-full">
+                <Badge className="absolute -top-2 -right-2 bg-green-600 h-5 w-5 flex items-center justify-center p-0 rounded-full">
                   {totalItems}
                 </Badge>
               )}
@@ -59,8 +59,10 @@ const Header = ({ title, showBackButton = false, showSearch = false }: HeaderPro
           <div className="mt-4 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input 
-              placeholder="Search for restaurants and products..." 
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:border-brand-orange focus:ring-brand-orange"
+              placeholder="ابحث عن المنتجات..." 
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:border-green-500 focus:ring-green-500"
+              onClick={() => navigate('/search')}
+              readOnly
             />
           </div>
         )}

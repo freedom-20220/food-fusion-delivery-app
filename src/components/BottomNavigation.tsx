@@ -19,7 +19,7 @@ const BottomNavigation = () => {
       <div className="flex justify-around items-center py-2">
         <Link 
           to="/" 
-          className={`flex flex-col items-center p-2 ${isActive('/') ? 'text-brand-orange' : 'text-gray-500'}`}
+          className={`flex flex-col items-center p-2 ${isActive('/') ? 'text-green-600' : 'text-gray-500'}`}
         >
           <Home className="h-6 w-6" />
           <span className="text-xs mt-1">الرئيسية</span>
@@ -27,7 +27,7 @@ const BottomNavigation = () => {
 
         <Link 
           to="/search" 
-          className={`flex flex-col items-center p-2 ${isActive('/search') ? 'text-brand-orange' : 'text-gray-500'}`}
+          className={`flex flex-col items-center p-2 ${isActive('/search') ? 'text-green-600' : 'text-gray-500'}`}
         >
           <Search className="h-6 w-6" />
           <span className="text-xs mt-1">البحث</span>
@@ -35,11 +35,11 @@ const BottomNavigation = () => {
 
         <Link 
           to="/cart" 
-          className={`flex flex-col items-center p-2 relative ${isActive('/cart') ? 'text-brand-orange' : 'text-gray-500'}`}
+          className={`flex flex-col items-center p-2 relative ${isActive('/cart') ? 'text-green-600' : 'text-gray-500'}`}
         >
           <ShoppingCart className="h-6 w-6" />
           {totalItems > 0 && (
-            <Badge className="absolute -top-1 -right-1 bg-brand-orange h-5 w-5 flex items-center justify-center p-0 rounded-full">
+            <Badge className="absolute -top-1 -right-1 bg-green-600 h-5 w-5 flex items-center justify-center p-0 rounded-full">
               {totalItems}
             </Badge>
           )}
@@ -48,7 +48,7 @@ const BottomNavigation = () => {
 
         <Link 
           to="/profile" 
-          className={`flex flex-col items-center p-2 ${isActive('/profile') ? 'text-brand-orange' : 'text-gray-500'}`}
+          className={`flex flex-col items-center p-2 ${isActive('/profile') ? 'text-green-600' : 'text-gray-500'}`}
         >
           <User className="h-6 w-6" />
           <span className="text-xs mt-1">الحساب</span>
