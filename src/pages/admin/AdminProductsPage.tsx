@@ -15,10 +15,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from '@/components/ui/badge';
 import { Product } from '@/types';
-import { mockProducts } from '@/data/eco-market-data';
+import { products } from '@/data/eco-market-data';
 
 const AdminProductsPage = () => {
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [products, setProducts] = useState<Product[]>(products);
   const [searchTerm, setSearchTerm] = useState('');
   const { toast } = useToast();
   
