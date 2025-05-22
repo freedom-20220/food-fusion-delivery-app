@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BottomNavigation from '@/components/BottomNavigation';
 import { mockPaymentMethods } from '@/data/mock-payment-methods';
@@ -11,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 const PaymentMethodsPage = () => {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(mockPaymentMethods);
   const { toast } = useToast();
+  const navigate = useNavigate();
   
   const setDefaultPaymentMethod = (id: string) => {
     const updatedMethods = paymentMethods.map(method => ({
@@ -34,6 +36,10 @@ const PaymentMethodsPage = () => {
       duration: 2000,
     });
   };
+  
+  const addNewCard = () => {
+    navigate('/add-card');
+  };
 
   return (
     <div className="pb-16">
@@ -42,6 +48,7 @@ const PaymentMethodsPage = () => {
       <main className="container mx-auto px-4 py-6">
         <Button
           className="w-full mb-6 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700"
+          onClick={addNewCard}
         >
           <PlusCircle className="h-5 w-5" />
           <span>إضافة بطاقة جديدة</span>

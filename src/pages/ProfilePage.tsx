@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BottomNavigation from '@/components/BottomNavigation';
@@ -12,7 +12,8 @@ import {
   LogOut, 
   User, 
   Bell,
-  ChevronRight
+  ChevronRight,
+  Menu
 } from 'lucide-react';
 import {
   Accordion,
@@ -20,6 +21,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useToast } from '@/hooks/use-toast';
 
 const ProfilePage = () => {
@@ -29,18 +37,35 @@ const ProfilePage = () => {
     email: 'mohammed@example.com',
     phone: '+970 59 123 4567',
   };
+  
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  useEffect(() => {
+    // Check if user is logged in
+    const loggedIn = localStorage.getItem('isLoggedIn');
+    if (!loggedIn) {
+      navigate('/login');
+    }
+    
+    // Check if user is admin
+    setIsAdmin(localStorage.getItem('isAdmin') === 'true');
+  }, [navigate]);
 
   const handleLogout = () => {
-    // In a real app, this would handle the logout functionality
+    // Clear authentication state
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('isAdmin');
+    
     toast({
       title: "تم تسجيل الخروج بنجاح",
       description: "شكراً لاستخدامك تطبيقنا",
       duration: 3000,
     });
-    // Redirect to home page after logout
-    setTimeout(() => navigate('/'), 500);
+    
+    // Redirect to login page after logout
+    navigate('/login');
   };
 
   const menuItems = [
@@ -111,7 +136,7 @@ const ProfilePage = () => {
               <p className="text-sm text-brand-text-secondary">{user.phone}</p>
             </div>
           </div>
-          <Link to="/settings">
+          <Link to="/edit-profile">
             <Button
               className="mt-4 w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
             >
@@ -143,7 +168,28 @@ const ProfilePage = () => {
 
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="p-4 border-b border-gray-100">
-            <h3 className="font-semibold">الفئات</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold">الفئات</h3>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">قائمة الفئات</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuGroup>
+                    {categoryItems.map((category, index) => (
+                      <DropdownMenuItem key={index} asChild>
+                        <Link to={`/search?category=${category.title}`}>
+                          {category.title}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
           <Accordion type="single" collapsible className="w-full">
             {categoryItems.map((category, index) => (
@@ -177,16 +223,18 @@ const ProfilePage = () => {
           <span>تسجيل الخروج</span>
         </Button>
 
-        {/* Admin Panel Link */}
-        <Link to="/admin">
-          <Button
-            variant="outline"
-            className="w-full border-dashed border-gray-300 text-gray-600 flex items-center justify-center gap-2"
-          >
-            <Settings className="h-5 w-5" />
-            <span>لوحة التحكم (الإدارة)</span>
-          </Button>
-        </Link>
+        {/* Admin Panel Link - Only shown if user is admin */}
+        {isAdmin && (
+          <Link to="/admin">
+            <Button
+              variant="outline"
+              className="w-full border-dashed border-gray-300 text-gray-600 flex items-center justify-center gap-2"
+            >
+              <Settings className="h-5 w-5" />
+              <span>لوحة التحكم (الإدارة)</span>
+            </Button>
+          </Link>
+        )}
       </main>
       
       <BottomNavigation />

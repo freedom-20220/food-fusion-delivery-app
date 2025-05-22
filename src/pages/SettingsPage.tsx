@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Globe, Moon, User, Bell, Shield, Languages } from 'lucide-react';
@@ -16,31 +17,73 @@ import { useToast } from '@/hooks/use-toast';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
-    language: 'ar',
-    darkMode: false,
+    language: localStorage.getItem('appLanguage') || 'ar',
+    darkMode: localStorage.getItem('darkMode') === 'true',
   });
   
   const { toast } = useToast();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Apply dark mode on mount
+    applyDarkMode(settings.darkMode);
+  }, []);
   
   const handleLanguageChange = (value: string) => {
     setSettings(prev => ({ ...prev, language: value }));
+    localStorage.setItem('appLanguage', value);
     
     toast({
-      title: "تم تغيير اللغة",
+      title: value === 'ar' ? "تم تغيير اللغة" : "Language Changed",
       description: value === 'ar' ? "تم تغيير اللغة إلى العربية" : "Language changed to English",
+      duration: 2000,
+    });
+    
+    // In a real app, this would change all the app's text to the selected language
+    document.documentElement.dir = value === 'ar' ? 'rtl' : 'ltr';
+  };
+  
+  const applyDarkMode = (isDark: boolean) => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.style.setProperty('--background', '222.2 84% 4.9%');
+      document.documentElement.style.setProperty('--foreground', '210 40% 98%');
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.style.setProperty('--background', '0 0% 100%');
+      document.documentElement.style.setProperty('--foreground', '222.2 84% 4.9%');
+    }
+  };
+  
+  const handleDarkModeToggle = () => {
+    const newDarkMode = !settings.darkMode;
+    setSettings(prev => ({ ...prev, darkMode: newDarkMode }));
+    localStorage.setItem('darkMode', newDarkMode.toString());
+    
+    applyDarkMode(newDarkMode);
+    
+    toast({
+      title: newDarkMode ? "تم تفعيل الوضع المظلم" : "تم تفعيل الوضع الفاتح",
       duration: 2000,
     });
   };
   
-  const handleDarkModeToggle = () => {
-    setSettings(prev => ({ ...prev, darkMode: !prev.darkMode }));
+  const navigateToPage = (path: string) => {
+    navigate(path);
+  };
+  
+  const handleLogout = () => {
+    // Clear authentication state
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('isAdmin');
     
     toast({
-      title: settings.darkMode ? "تم تفعيل الوضع الفاتح" : "تم تفعيل الوضع المظلم",
+      title: "تم تسجيل الخروج بنجاح",
       duration: 2000,
     });
     
-    // In a real app, this would apply dark mode to the app
+    // Redirect to login screen
+    navigate('/login');
   };
 
   return (
@@ -103,6 +146,7 @@ const SettingsPage = () => {
             <Button
               variant="ghost"
               className="w-full justify-start px-4 py-3 h-auto rounded-none"
+              onClick={() => navigateToPage('/edit-profile')}
             >
               <User className="h-5 w-5 mr-3 text-gray-600" />
               <span>تعديل الملف الشخصي</span>
@@ -111,6 +155,7 @@ const SettingsPage = () => {
             <Button
               variant="ghost"
               className="w-full justify-start px-4 py-3 h-auto rounded-none border-t"
+              onClick={() => navigateToPage('/notifications-settings')}
             >
               <Bell className="h-5 w-5 mr-3 text-gray-600" />
               <span>إعدادات الإشعارات</span>
@@ -119,6 +164,7 @@ const SettingsPage = () => {
             <Button
               variant="ghost"
               className="w-full justify-start px-4 py-3 h-auto rounded-none border-t"
+              onClick={() => navigateToPage('/security-privacy')}
             >
               <Shield className="h-5 w-5 mr-3 text-gray-600" />
               <span>الأمان والخصوصية</span>
@@ -127,6 +173,7 @@ const SettingsPage = () => {
             <Button
               variant="ghost"
               className="w-full justify-start px-4 py-3 h-auto rounded-none border-t"
+              onClick={() => navigateToPage('/language-region')}
             >
               <Languages className="h-5 w-5 mr-3 text-gray-600" />
               <span>اللغة والمنطقة</span>
@@ -137,6 +184,7 @@ const SettingsPage = () => {
         <Button
           variant="destructive"
           className="w-full"
+          onClick={handleLogout}
         >
           تسجيل الخروج
         </Button>
