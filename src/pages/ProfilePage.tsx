@@ -1,9 +1,26 @@
 
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import BottomNavigation from '@/components/BottomNavigation';
 import { Button } from '@/components/ui/button';
-import { Settings, Heart, Package, CreditCard, LogOut, User, Bell } from 'lucide-react';
+import { 
+  Settings, 
+  Heart, 
+  Package, 
+  CreditCard, 
+  LogOut, 
+  User, 
+  Bell,
+  ChevronRight
+} from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { useToast } from '@/hooks/use-toast';
 
 const ProfilePage = () => {
   // This would normally come from an authentication context
@@ -11,6 +28,19 @@ const ProfilePage = () => {
     name: 'محمد أحمد',
     email: 'mohammed@example.com',
     phone: '+970 59 123 4567',
+  };
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    // In a real app, this would handle the logout functionality
+    toast({
+      title: "تم تسجيل الخروج بنجاح",
+      description: "شكراً لاستخدامك تطبيقنا",
+      duration: 3000,
+    });
+    // Redirect to home page after logout
+    setTimeout(() => navigate('/'), 500);
   };
 
   const menuItems = [
@@ -46,14 +76,33 @@ const ProfilePage = () => {
     },
   ];
 
+  const categoryItems = [
+    {
+      title: 'مطبخ',
+      subcategories: ['أدوات المطبخ', 'أواني الطبخ', 'أدوات التقطيع', 'أجهزة صغيرة'],
+    },
+    {
+      title: 'حمام',
+      subcategories: ['مناشف', 'أدوات استحمام', 'إكسسوارات الحمام', 'منظفات'],
+    },
+    {
+      title: 'غرفة معيشة',
+      subcategories: ['ديكورات', 'وسائد', 'سجاد', 'إضاءة'],
+    },
+    {
+      title: 'صديق للبيئة',
+      subcategories: ['منتجات قابلة للتحلل', 'إعادة تدوير', 'مواد عضوية', 'توفير طاقة'],
+    },
+  ];
+
   return (
-    <div className="pb-16">
+    <div className="pb-16 bg-gray-50">
       <Header title="الحساب الشخصي" />
       
-      <main className="container mx-auto px-4 py-6">
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <main className="container mx-auto px-4 py-6 space-y-6">
+        <div className="bg-white rounded-lg shadow p-6">
           <div className="flex items-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mr-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center mr-4">
               <User className="h-8 w-8 text-green-600" />
             </div>
             <div>
@@ -62,43 +111,82 @@ const ProfilePage = () => {
               <p className="text-sm text-brand-text-secondary">{user.phone}</p>
             </div>
           </div>
-          <Button
-            className="mt-4 w-full bg-gray-100 hover:bg-gray-200 text-brand-text-primary"
-          >
-            تعديل الحساب
-          </Button>
+          <Link to="/settings">
+            <Button
+              className="mt-4 w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+            >
+              تعديل الحساب
+            </Button>
+          </Link>
         </div>
         
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-white rounded-lg shadow overflow-hidden">
           {menuItems.map((item, index) => (
-            <div 
+            <Link 
               key={index}
-              className={`flex items-center p-4 ${
+              to={item.path}
+              className={`flex items-center p-4 hover:bg-gray-50 transition-colors ${
                 index !== menuItems.length - 1 ? 'border-b border-gray-100' : ''
               }`}
             >
-              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mr-4">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center mr-4">
                 <item.icon className="h-5 w-5 text-green-600" />
               </div>
               <div className="flex-grow">
                 <h3 className="font-medium">{item.title}</h3>
                 <p className="text-sm text-brand-text-secondary">{item.description}</p>
               </div>
-              <div>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-            </div>
+              <ChevronRight className="h-5 w-5 text-gray-400" />
+            </Link>
           ))}
+        </div>
+
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="p-4 border-b border-gray-100">
+            <h3 className="font-semibold">الفئات</h3>
+          </div>
+          <Accordion type="single" collapsible className="w-full">
+            {categoryItems.map((category, index) => (
+              <AccordionItem key={index} value={`category-${index}`}>
+                <AccordionTrigger className="px-4 py-2 hover:bg-gray-50 font-medium">
+                  {category.title}
+                </AccordionTrigger>
+                <AccordionContent>
+                  <div className="py-1">
+                    {category.subcategories.map((subcategory, subIndex) => (
+                      <Link 
+                        key={subIndex} 
+                        to={`/search?category=${category.title}&subcategory=${subcategory}`}
+                        className="block px-8 py-2 text-sm hover:bg-gray-50 transition-colors"
+                      >
+                        {subcategory}
+                      </Link>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </div>
         
         <Button
-          className="mt-6 w-full bg-gray-100 hover:bg-gray-200 text-red-500 flex items-center justify-center gap-2"
+          className="w-full bg-red-50 hover:bg-red-100 text-red-600 flex items-center justify-center gap-2 py-6"
+          onClick={handleLogout}
         >
           <LogOut className="h-5 w-5" />
           <span>تسجيل الخروج</span>
         </Button>
+
+        {/* Admin Panel Link */}
+        <Link to="/admin">
+          <Button
+            variant="outline"
+            className="w-full border-dashed border-gray-300 text-gray-600 flex items-center justify-center gap-2"
+          >
+            <Settings className="h-5 w-5" />
+            <span>لوحة التحكم (الإدارة)</span>
+          </Button>
+        </Link>
       </main>
       
       <BottomNavigation />
