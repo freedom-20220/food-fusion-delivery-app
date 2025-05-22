@@ -70,3 +70,35 @@ export interface Order {
   deliveryAddress: string;
   estimatedDeliveryTime?: number;
 }
+
+// Favorites type definition
+export interface Favorite {
+  id: string;
+  userId: string;
+  product: Product;
+  createdAt: Date;
+}
+
+// Payment method type definition
+export interface PaymentMethod {
+  id: string;
+  cardNumber: string;
+  cardHolder: string;
+  expiryDate: string;
+  isDefault: boolean;
+}
+
+// Notification settings type definition
+export interface NotificationSettings {
+  promotions: boolean;
+  orderUpdates: boolean;
+  newProducts: boolean;
+  deliveryAlerts: boolean;
+}
+
+// User settings type definition
+export interface UserSettings {
+  language: 'en' | 'ar';
+  darkMode: boolean;
+  notificationSettings: NotificationSettings;
+}

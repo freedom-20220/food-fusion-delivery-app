@@ -5,7 +5,8 @@ import { Product } from '@/types';
 import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/CartContext';
-import { useToast } from '@/components/ui/use-toast';
+import { useFavorites } from '@/context/FavoritesContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +15,7 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, featured = false }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { isFavorite, addToFavorites, removeFromFavorites } = useFavorites();
   const { toast } = useToast();
 
   // Format the price
@@ -29,6 +31,16 @@ const ProductCard = ({ product, featured = false }: ProductCardProps) => {
       description: `${product.name} has been added to your cart.`,
       duration: 2000,
     });
+  };
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    
+    if (isFavorite(product.id)) {
+      removeFromFavorites(product.id);
+    } else {
+      addToFavorites(product);
+    }
   };
 
   return (
@@ -58,8 +70,11 @@ const ProductCard = ({ product, featured = false }: ProductCardProps) => {
           />
         </div>
 
-        <button className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-100">
-          <Heart className="h-4 w-4 text-gray-500" />
+        <button 
+          className={`absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-sm hover:bg-gray-100 ${isFavorite(product.id) ? 'text-red-500' : 'text-gray-500'}`}
+          onClick={handleToggleFavorite}
+        >
+          <Heart className={`h-4 w-4 ${isFavorite(product.id) ? 'fill-current' : ''}`} />
         </button>
       </div>
       
